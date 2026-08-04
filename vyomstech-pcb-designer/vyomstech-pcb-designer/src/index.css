@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+:root {
+  /* Soldermask & board tokens */
+  --board-void: #08120e;      /* board edge / outer void */
+  --board-mask: #0e2119;      /* soldermask green panel */
+  --board-mask-raised: #12291f; /* slightly raised panel */
+  --copper: #d69a5c;          /* copper trace */
+  --copper-bright: #f0b878;   /* hovered copper */
+  --silkscreen: #eef1ec;      /* silkscreen white text */
+  --silkscreen-dim: #9db3a8;  /* dimmer label text */
+  --signal-green: #4ade80;    /* LED ok */
+  --signal-red: #f26d5b;      /* LED error */
+  --hairline: #1e3a2c;        /* subtle divider, like PCB trace outline */
+
+  --font-display: 'Space Mono', 'JetBrains Mono', monospace;
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--board-void);
+  color: var(--silkscreen);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--copper-bright);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

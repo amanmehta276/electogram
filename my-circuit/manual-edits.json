@@ -1,0 +1,12 @@
+{
+  "pcb_placements": [
+    {
+      "selector": "R1",
+      "center": {
+        "x": 0.6042414913630907,
+        "y": 12.59196168975543
+      },
+      "relative_to": "group_center"
+    }
+  ]
+}

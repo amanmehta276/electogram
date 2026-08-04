@@ -1,0 +1,28 @@
+# VyomsTech PCB Designer
+
+Browser-based PCB designer: write tscircuit (TSX) code on the left, see live PCB/schematic/3D preview on the right — no need to keep switching to VS Code.
+
+## Run locally
+
+```bash
+npm install --legacy-peer-deps
+npm run dev
+```
+
+Open the printed localhost URL. Edit the code in the left panel — the board rebuilds automatically (600ms debounce) and the right panel updates live.
+
+## Deploy
+
+```bash
+npm run build
+```
+
+This outputs a static `dist/` folder — deploy it to Netlify, Vercel, or any static host (all rendering happens client-side in a web worker, no backend needed).
+
+## Notes
+
+- Entry file inside the app is virtual (`index.tsx`), not tied to disk — everything happens in-browser via `@tscircuit/eval` + `@tscircuit/runframe`.
+- To load an existing multi-file tscircuit project, extend the `fsMap` object in `src/App.tsx` with more files and point `entrypoint` at the right one.
+- `--legacy-peer-deps` is needed because `tscircuit` currently pins TypeScript ^5 while some tooling has moved to newer majors.
+- **Saving boards**: multiple boards save to the browser's `localStorage` (no backend). Name a board in the topbar field, hit "Save", and it appears under "Boards". This is per-browser/per-device — clearing browser data removes them.
+- **Downloading files**: the "Download" menu in the topbar exports the current board's source code (`.tsx`), the PCB layout as SVG, the schematic as SVG, or the raw Circuit JSON. The SVG/JSON options are enabled once a successful build has produced circuit data (hit "Run" first).
