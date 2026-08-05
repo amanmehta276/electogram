@@ -311,6 +311,44 @@
   width: 100%;
 }
 
+@media (max-width: 1180px) {
+  .topbar {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    height: auto;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .brand {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .project-bar,
+  .topbar-right {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .project-bar {
+    justify-content: flex-start;
+  }
+
+  .project-name-input {
+    width: 100%;
+    max-width: none;
+  }
+
+  .topbar-btn,
+  .syntax-btn {
+    min-width: 0;
+    flex: 1 1 160px;
+  }
+}
+
 @media (max-width: 860px) {
   .workspace {
     grid-template-columns: 1fr;
