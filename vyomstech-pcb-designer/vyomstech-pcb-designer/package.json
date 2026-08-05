@@ -30,6 +30,7 @@
     "@tscircuit/runframe": "^0.0.2334",
     "@tscircuit/schematic-viewer": "^2.0.75",
     "@tscircuit/solver-utils": "^0.0.19",
+    "circuit-json-to-gerber": "^0.0.88",
     "circuit-to-svg": "^0.0.396",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

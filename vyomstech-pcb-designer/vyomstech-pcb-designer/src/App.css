@@ -177,6 +177,17 @@
   cursor: not-allowed;
 }
 
+.download-menu-divider {
+  height: 1px;
+  background: var(--hairline);
+  margin: 4px 2px;
+}
+
+.download-menu-highlight {
+  color: var(--copper-bright) !important;
+  font-weight: 600;
+}
+
 .status {
   display: flex;
   align-items: center;

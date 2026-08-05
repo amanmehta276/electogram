@@ -5,10 +5,17 @@ import {
   convertCircuitJsonToPcbSvg,
   convertCircuitJsonToSchematicSvg,
 } from "circuit-to-svg"
+import {
+  convertSoupToGerberCommands,
+  convertSoupToExcellonDrillCommandLayers,
+  stringifyGerberCommandLayers,
+  stringifyExcellonDrill,
+} from "circuit-json-to-gerber"
+import JSZip from "jszip"
 import { Cheatsheet } from "./Cheatsheet"
 import { ProjectsPanel } from "./ProjectsPanel"
 import { useProjects, type Project } from "./useProjects"
-import { downloadTextFile } from "./downloadFile"
+import { downloadTextFile, downloadBlob } from "./downloadFile"
 import "./App.css"
 
 const DEFAULT_CODE = `circuit.add(
@@ -111,6 +118,34 @@ function App() {
     setShowDownloadMenu(false)
   }, [circuitJson, slug])
 
+  const handleDownloadGerbers = useCallback(async () => {
+    if (!circuitJson) return
+    const gerberCmds = convertSoupToGerberCommands(circuitJson as any)
+    const gerberOutput = stringifyGerberCommandLayers(gerberCmds)
+
+    const drillCmdLayers = convertSoupToExcellonDrillCommandLayers({
+      circuitJson: circuitJson as any,
+    })
+    const drillOutput = Object.fromEntries(
+      Object.entries(drillCmdLayers).map(([filename, commands]) => [
+        filename,
+        stringifyExcellonDrill(commands as any),
+      ]),
+    )
+
+    const zip = new JSZip()
+    for (const [layerName, content] of Object.entries(gerberOutput)) {
+      zip.file(`${layerName}.gbr`, content)
+    }
+    for (const [filename, content] of Object.entries(drillOutput)) {
+      zip.file(filename, content)
+    }
+
+    const blob = await zip.generateAsync({ type: "blob" })
+    downloadBlob(`${slug}-gerbers.zip`, blob)
+    setShowDownloadMenu(false)
+  }, [circuitJson, slug])
+
   const handleEditorMount: OnMount = (editor, monaco) => {
     editor.updateOptions({
       fontFamily: "'Space Mono', monospace",
@@ -209,6 +244,14 @@ function App() {
                     disabled={!circuitJson}
                   >
                     Circuit JSON
+                  </button>
+                  <div className="download-menu-divider" />
+                  <button
+                    onClick={handleDownloadGerbers}
+                    disabled={!circuitJson}
+                    className="download-menu-highlight"
+                  >
+                    Gerbers (.zip) — for manufacturing
                   </button>
                 </div>
               </>

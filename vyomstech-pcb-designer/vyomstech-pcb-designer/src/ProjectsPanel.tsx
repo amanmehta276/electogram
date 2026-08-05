@@ -47,8 +47,8 @@ export function ProjectsPanel({
 
         {sorted.length === 0 && (
           <p className="projects-empty">
-            Koi board save nahi hua abhi tak. Topbar me naam de kar "Save"
-            dabao — yahan list ho jayega.
+            No boards saved yet. Give it a name up top and hit "Save" — it
+            will show up here.
           </p>
         )}
 
@@ -79,8 +79,8 @@ export function ProjectsPanel({
         </div>
 
         <p className="projects-note">
-          Ye sirf is browser me save hota hai (localStorage) — koi server pe
-          nahi jaata.
+          This only saves in this browser (localStorage) — nothing goes to a
+          server.
         </p>
       </aside>
     </div>
