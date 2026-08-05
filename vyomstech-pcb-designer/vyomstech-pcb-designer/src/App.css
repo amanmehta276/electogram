@@ -311,44 +311,6 @@
   width: 100%;
 }
 
-@media (max-width: 1180px) {
-  .topbar {
-    flex-wrap: wrap;
-    align-items: flex-start;
-    height: auto;
-    gap: 12px;
-    padding: 12px;
-  }
-
-  .brand {
-    flex: 1 1 100%;
-    min-width: 0;
-  }
-
-  .project-bar,
-  .topbar-right {
-    width: 100%;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .project-bar {
-    justify-content: flex-start;
-  }
-
-  .project-name-input {
-    width: 100%;
-    max-width: none;
-  }
-
-  .topbar-btn,
-  .syntax-btn {
-    min-width: 0;
-    flex: 1 1 160px;
-  }
-}
-
 @media (max-width: 860px) {
   .workspace {
     grid-template-columns: 1fr;
@@ -358,5 +320,91 @@
   .editor-panel {
     border-right: none;
     border-bottom: 1px solid var(--hairline);
+  }
+}
+
+@media (max-width: 780px) {
+  .topbar {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 52px;
+    padding: 10px 12px;
+    row-gap: 8px;
+    column-gap: 12px;
+  }
+
+  .brand {
+    flex-shrink: 0;
+  }
+
+  .brand-product {
+    display: none;
+  }
+
+  .project-bar {
+    order: 3;
+    flex: 1 1 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+
+  .project-bar::-webkit-scrollbar {
+    height: 3px;
+  }
+
+  .project-name-input {
+    width: 120px;
+    max-width: 42vw;
+    flex-shrink: 0;
+  }
+
+  .topbar-btn,
+  .syntax-btn {
+    flex-shrink: 0;
+  }
+
+  .topbar-right {
+    order: 2;
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    gap: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .status-label {
+    display: none;
+  }
+
+  .download-menu {
+    right: -12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-name {
+    font-size: 12px;
+  }
+
+  .topbar-btn,
+  .syntax-btn {
+    font-size: 10px;
+    padding: 6px 9px;
+  }
+
+  .panel-label span:first-child {
+    font-size: 10px;
+  }
+
+  .run-btn {
+    font-size: 10px;
+    padding: 5px 8px;
+  }
+
+  .cheatsheet,
+  .projects-panel {
+    padding: 16px 14px 32px;
   }
 }

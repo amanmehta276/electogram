@@ -14,6 +14,7 @@ import {
 import JSZip from "jszip"
 import { Cheatsheet } from "./Cheatsheet"
 import { ProjectsPanel } from "./ProjectsPanel"
+import { AudioTestPanel } from "./AudioTestPanel"
 import { useProjects, type Project } from "./useProjects"
 import { downloadTextFile, downloadBlob } from "./downloadFile"
 import "./App.css"
@@ -40,6 +41,7 @@ function App() {
   })
   const [status, setStatus] = useState<Status>("idle")
   const [showCheatsheet, setShowCheatsheet] = useState(false)
+  const [showAudioTest, setShowAudioTest] = useState(false)
 
   const { projects, saveProject, deleteProject } = useProjects()
   const [activeId, setActiveId] = useState<string | null>(null)
@@ -210,6 +212,13 @@ function App() {
         <div className="topbar-right">
           <button
             className="syntax-btn"
+            onClick={() => setShowAudioTest(true)}
+          >
+            🔊 Audio test
+          </button>
+
+          <button
+            className="syntax-btn"
             onClick={() => setShowCheatsheet(true)}
           >
             VyomLang syntax
@@ -272,6 +281,10 @@ function App() {
 
       {showCheatsheet && (
         <Cheatsheet onClose={() => setShowCheatsheet(false)} />
+      )}
+
+      {showAudioTest && (
+        <AudioTestPanel code={code} onClose={() => setShowAudioTest(false)} />
       )}
 
       {showProjects && (
