@@ -23,16 +23,25 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
     "idle",
   )
   const [playing, setPlaying] = useState<"original" | "filtered" | null>(null)
+  const [filterType, setFilterType] = useState<"lowpass" | "highpass">(
+    "lowpass",
+  )
 
   const [micActive, setMicActive] = useState(false)
   const [micFiltered, setMicFiltered] = useState(true)
   const [micError, setMicError] = useState<string | null>(null)
+
+  const [isRecording, setIsRecording] = useState(false)
+  const [recordError, setRecordError] = useState<string | null>(null)
 
   const ctxRef = useRef<AudioContext | null>(null)
   const sourceRef = useRef<AudioBufferSourceNode | null>(null)
   const micStreamRef = useRef<MediaStream | null>(null)
   const micSourceRef = useRef<MediaStreamAudioSourceNode | null>(null)
   const micFilterRef = useRef<BiquadFilterNode | null>(null)
+  const recorderRef = useRef<MediaRecorder | null>(null)
+  const recordedChunksRef = useRef<Blob[]>([])
+  const recordStreamRef = useRef<MediaStream | null>(null)
 
   const getCtx = () => {
     if (!ctxRef.current) {
@@ -55,6 +64,51 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
     }
   }, [])
 
+  const startRecording = useCallback(async () => {
+    setRecordError(null)
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      recordStreamRef.current = stream
+      recordedChunksRef.current = []
+
+      const recorder = new MediaRecorder(stream)
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) recordedChunksRef.current.push(e.data)
+      }
+      recorder.onstop = async () => {
+        stream.getTracks().forEach((track) => track.stop())
+        setStatus("loading")
+        try {
+          const blob = new Blob(recordedChunksRef.current, {
+            type: recorder.mimeType,
+          })
+          const arrayBuffer = await blob.arrayBuffer()
+          const ctx = getCtx()
+          const decoded = await ctx.decodeAudioData(arrayBuffer)
+          setBuffer(decoded)
+          setFileName("recorded-voice")
+          setStatus("ready")
+        } catch {
+          setStatus("error")
+        }
+      }
+
+      recorder.start()
+      recorderRef.current = recorder
+      setIsRecording(true)
+    } catch {
+      setRecordError(
+        "Couldn't access the microphone — check browser permissions.",
+      )
+    }
+  }, [])
+
+  const submitRecording = useCallback(() => {
+    recorderRef.current?.stop()
+    recorderRef.current = null
+    setIsRecording(false)
+  }, [])
+
   const stop = useCallback(() => {
     sourceRef.current?.stop()
     sourceRef.current = null
@@ -72,7 +126,7 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
 
       if (mode === "filtered") {
         const filter = ctx.createBiquadFilter()
-        filter.type = "lowpass"
+        filter.type = filterType
         filter.frequency.value = cutoffHz
         source.connect(filter)
         filter.connect(ctx.destination)
@@ -85,7 +139,7 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
       sourceRef.current = source
       setPlaying(mode)
     },
-    [buffer, cutoffHz, stop],
+    [buffer, cutoffHz, filterType, stop],
   )
 
   const downloadFiltered = useCallback(async () => {
@@ -98,7 +152,7 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
     const source = offlineCtx.createBufferSource()
     source.buffer = buffer
     const filter = offlineCtx.createBiquadFilter()
-    filter.type = "lowpass"
+    filter.type = filterType
     filter.frequency.value = cutoffHz
     source.connect(filter)
     filter.connect(offlineCtx.destination)
@@ -106,7 +160,7 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
     const rendered = await offlineCtx.startRendering()
     const wav = audioBufferToWavBlob(rendered)
     downloadBlob(`${(fileName ?? "audio").replace(/\.[^.]+$/, "")}-filtered.wav`, wav)
-  }, [buffer, cutoffHz, fileName])
+  }, [buffer, cutoffHz, fileName, filterType])
 
   const stopMic = useCallback(() => {
     micStreamRef.current?.getTracks().forEach((track) => track.stop())
@@ -126,7 +180,7 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       const micSource = ctx.createMediaStreamSource(stream)
       const filter = ctx.createBiquadFilter()
-      filter.type = "lowpass"
+      filter.type = filterType
       filter.frequency.value = cutoffHz
 
       micSource.connect(filter)
@@ -145,7 +199,7 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
         "Couldn't access the microphone — check browser permissions.",
       )
     }
-  }, [cutoffHz, micFiltered])
+  }, [cutoffHz, micFiltered, filterType])
 
   const toggleMicFilter = useCallback(() => {
     const ctx = ctxRef.current
@@ -169,6 +223,7 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
   useEffect(() => {
     return () => {
       micStreamRef.current?.getTracks().forEach((track) => track.stop())
+      recordStreamRef.current?.getTracks().forEach((track) => track.stop())
     }
   }, [])
 
@@ -214,33 +269,68 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
               </div>
             </div>
             <p className="audio-note">
-              Frequencies above this cutoff get attenuated — this is what
-              your circuit would do to a real audio signal.
+              Frequencies above the cutoff get attenuated in low-pass mode,
+              or below it in high-pass mode — pick whichever matches how
+              you've wired the resistor and capacitor.
             </p>
 
-            <label className="audio-upload">
-              <input
-                type="file"
-                accept="audio/*"
-                onChange={(e) => {
-                  const file = e.target.files?.[0]
-                  if (file) handleFile(file)
-                }}
-              />
-              {fileName ? "Change audio file" : "Upload an audio file"}
-            </label>
+            <div className="audio-filter-select">
+              <span>Filter type</span>
+              <select
+                value={filterType}
+                disabled={micActive}
+                onChange={(e) =>
+                  setFilterType(e.target.value as "lowpass" | "highpass")
+                }
+              >
+                <option value="lowpass">Low-pass (cuts highs)</option>
+                <option value="highpass">High-pass (cuts lows)</option>
+              </select>
+            </div>
 
+            <p className="audio-section-title">1. Give it an input</p>
+            <div className="audio-input-row">
+              <label className="audio-upload">
+                <input
+                  type="file"
+                  accept="audio/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) handleFile(file)
+                  }}
+                />
+                Upload file
+              </label>
+
+              {!isRecording ? (
+                <button className="audio-upload audio-upload-btn" onClick={startRecording}>
+                  🎙️ Record voice
+                </button>
+              ) : (
+                <button
+                  className="audio-upload audio-upload-btn audio-recording"
+                  onClick={submitRecording}
+                >
+                  ■ Stop &amp; submit
+                </button>
+              )}
+            </div>
+
+            {recordError && (
+              <p className="audio-status audio-status-error">{recordError}</p>
+            )}
             {status === "loading" && (
-              <p className="audio-status">Decoding {fileName}…</p>
+              <p className="audio-status">Processing {fileName}…</p>
             )}
             {status === "error" && (
               <p className="audio-status audio-status-error">
-                Couldn't decode that file — try a standard WAV or MP3.
+                Couldn't decode that audio — try a standard WAV or MP3 file.
               </p>
             )}
 
             {status === "ready" && buffer && (
               <div className="audio-controls">
+                <p className="audio-section-title">2. Hear the output</p>
                 <p className="audio-filename">{fileName}</p>
                 <div className="audio-buttons">
                   <button
@@ -249,7 +339,7 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
                       playing === "original" ? stop() : play("original")
                     }
                   >
-                    {playing === "original" ? "■ Stop" : "▶ Play original"}
+                    {playing === "original" ? "■ Stop" : "▶ Play input"}
                   </button>
                   <button
                     className={playing === "filtered" ? "audio-btn-active" : ""}
@@ -257,11 +347,12 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
                       playing === "filtered" ? stop() : play("filtered")
                     }
                   >
-                    {playing === "filtered" ? "■ Stop" : "▶ Play filtered"}
+                    {playing === "filtered" ? "■ Stop" : "▶ Play filtered output"}
                   </button>
                 </div>
+                <p className="audio-section-title">3. Download the output</p>
                 <button className="audio-download" onClick={downloadFiltered}>
-                  Download filtered (.wav)
+                  Download filtered output (.wav)
                 </button>
               </div>
             )}
@@ -269,11 +360,11 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
             <div className="audio-divider" />
 
             <div className="audio-live">
-              <p className="audio-live-title">🎤 Live microphone</p>
+              <p className="audio-live-title">🎤 Live monitor (continuous)</p>
               <p className="audio-note">
-                Speak or play sound near your mic and hear the filter applied
-                in real time. Use headphones — playing through speakers can
-                cause feedback squeal.
+                For an ongoing live feed instead of a one-shot recording —
+                hear the filter applied continuously as you speak. Use
+                headphones to avoid feedback squeal.
               </p>
 
               {!micActive ? (
