@@ -15,6 +15,7 @@ import JSZip from "jszip"
 import { Cheatsheet } from "./Cheatsheet"
 import { ProjectsPanel } from "./ProjectsPanel"
 import { AudioTestPanel } from "./AudioTestPanel"
+import { SimulationPanel } from "./SimulationPanel"
 import { useProjects, type Project } from "./useProjects"
 import { downloadTextFile, downloadBlob } from "./downloadFile"
 import "./App.css"
@@ -41,7 +42,7 @@ function App() {
   })
   const [status, setStatus] = useState<Status>("idle")
   const [activePanel, setActivePanel] = useState<
-    "cheatsheet" | "projects" | "audio" | null
+    "cheatsheet" | "projects" | "audio" | "simulation" | null
   >(null)
 
   const { projects, saveProject, deleteProject } = useProjects()
@@ -212,6 +213,13 @@ function App() {
         <div className="topbar-right">
           <button
             className="syntax-btn"
+            onClick={() => { setShowDownloadMenu(false); setActivePanel("simulation") }}
+          >
+            📈 Simulation
+          </button>
+
+          <button
+            className="syntax-btn"
             onClick={() => { setShowDownloadMenu(false); setActivePanel("audio") }}
           >
             🔊 Audio test
@@ -288,6 +296,13 @@ function App() {
 
       {activePanel === "audio" && (
         <AudioTestPanel code={code} onClose={() => setActivePanel(null)} />
+      )}
+
+      {activePanel === "simulation" && (
+        <SimulationPanel
+          circuitJson={circuitJson}
+          onClose={() => setActivePanel(null)}
+        />
       )}
 
       {activePanel === "projects" && (

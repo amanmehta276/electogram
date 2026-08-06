@@ -221,6 +221,109 @@ const ENTRIES = [
   },
 ]
 
+const EXAMPLES = [
+  {
+    title: "LED + resistor (simplest circuit)",
+    code: `circuit.add(
+  <board width="30mm" height="20mm">
+    <resistor name="R1" resistance="1k" footprint="0402" pcbX={-6} pcbY={0} />
+    <led name="LED1" color="red" footprint="0603" pcbX={6} pcbY={0} />
+    <trace name="T1" from="net.VCC" to=".R1 > .pin1" />
+    <trace name="T2" from=".R1 > .pin2" to=".LED1 > .anode" />
+    <trace name="T3" from=".LED1 > .cathode" to="net.GND" />
+  </board>
+)`,
+  },
+  {
+    title: "RC low-pass filter (cuts high frequencies)",
+    code: `circuit.add(
+  <board width="25mm" height="15mm">
+    <resistor name="R1" resistance="1k" footprint="0402" pcbX={-5} pcbY={0} />
+    <capacitor name="C1" capacitance="100nF" footprint="0402" pcbX={5} pcbY={0} />
+    <trace name="T1" from="net.AUDIO_IN" to=".R1 > .pin1" />
+    <trace name="T2" from=".R1 > .pin2" to="net.AUDIO_OUT" />
+    <trace name="T3" from="net.AUDIO_OUT" to=".C1 > .pin1" />
+    <trace name="T4" from=".C1 > .pin2" to="net.GND" />
+  </board>
+)`,
+  },
+  {
+    title: "RC high-pass filter (cuts low frequencies)",
+    code: `circuit.add(
+  <board width="25mm" height="15mm">
+    <capacitor name="C1" capacitance="100nF" footprint="0402" pcbX={-5} pcbY={0} />
+    <resistor name="R1" resistance="1k" footprint="0402" pcbX={5} pcbY={0} />
+    <trace name="T1" from="net.AUDIO_IN" to=".C1 > .pin1" />
+    <trace name="T2" from=".C1 > .pin2" to="net.AUDIO_OUT" />
+    <trace name="T3" from="net.AUDIO_OUT" to=".R1 > .pin1" />
+    <trace name="T4" from=".R1 > .pin2" to="net.GND" />
+  </board>
+)`,
+  },
+  {
+    title: "Button-controlled LED",
+    code: `circuit.add(
+  <board width="20mm" height="15mm">
+    <pushbutton name="SW1" footprint="pushbutton" pcbX={0} pcbY={0} />
+    <resistor name="R1" resistance="10k" footprint="0402" pcbX={-8} pcbY={0} />
+    <led name="LED1" color="blue" footprint="0603" pcbX={8} pcbY={0} />
+    <trace name="T1" from="net.VCC" to=".SW1 > .pin1" />
+    <trace name="T2" from=".SW1 > .pin2" to=".R1 > .pin1" />
+    <trace name="T3" from=".R1 > .pin2" to=".LED1 > .anode" />
+    <trace name="T4" from=".LED1 > .cathode" to="net.GND" />
+  </board>
+)`,
+  },
+  {
+    title: "RC transient simulation (real ngspice)",
+    code: `circuit.add(
+  <board width="30mm" height="20mm">
+    <voltagesource name="V1" voltage="5" footprint="0402"
+      connections={{ pin1: "net.VBAT", pin2: "net.GND" }} />
+    <resistor name="R1" resistance="150" footprint="0603" pcbX={0} pcbY={5} />
+    <capacitor name="C1" capacitance="47uF" footprint="0805" pcbX={10} pcbY={0} />
+    <trace name="T1" from="net.VBAT" to=".R1 > .pin1" />
+    <trace name="T2" from=".R1 > .pin2" to="net.VOUT" />
+    <trace name="T3" from="net.VOUT" to=".C1 > .pin1" />
+    <trace name="T4" from=".C1 > .pin2" to="net.GND" />
+    <voltageprobe name="Vcap" connectsTo=".C1 > .pin1" />
+    <analogtransientsimulation duration="20ms" />
+  </board>
+)`,
+  },
+]
+
+const COMMON_ERRORS = [
+  {
+    symptom: "IsolatedCircuit has no children",
+    fix: "You forgot circuit.add(...) — wrap your whole design in it.",
+  },
+  {
+    symptom: "requires a footprint when pcbX/pcbY",
+    fix: "Any component with a position (pcbX/pcbY) also needs a footprint prop.",
+  },
+  {
+    symptom: "Invalid footprint function",
+    fix: 'You used a made-up footprint string. Stick to known ones: "0402", "0603", "sod123", "pushbutton", "soic8", etc.',
+  },
+  {
+    symptom: 'trace "is missing a name"',
+    fix: 'Add name="T1" (or similar) to every <trace> — harmless but noisy otherwise.',
+  },
+  {
+    symptom: "Failed to fetch supplier footprint",
+    fix: "The engine tried an online part lookup and it failed. Usually harmless for prototyping — ignore unless the board looks wrong.",
+  },
+  {
+    symptom: "Could not identify connected source for VoltageProbe",
+    fix: 'connectsTo needs a specific pin (".C1 > .pin1"), not a bare net name ("net.VOUT").',
+  },
+  {
+    symptom: "Rendered fewer hooks than expected",
+    fix: "A tool-level React glitch from rapid re-renders, not a circuit mistake — use the ▶ Run button instead of continuous typing.",
+  },
+]
+
 export function Cheatsheet({ onClose }: CheatsheetProps) {
   return (
     <div className="cheatsheet-overlay" onClick={onClose}>
@@ -256,6 +359,28 @@ export function Cheatsheet({ onClose }: CheatsheetProps) {
               <pre className="cheatsheet-example">
                 <code>{entry.example}</code>
               </pre>
+            </div>
+          ))}
+        </div>
+
+        <h3 className="cheatsheet-section-heading">Worked examples</h3>
+        <div className="cheatsheet-list">
+          {EXAMPLES.map((ex) => (
+            <div className="cheatsheet-entry" key={ex.title}>
+              <div className="cheatsheet-tag">{ex.title}</div>
+              <pre className="cheatsheet-example">
+                <code>{ex.code}</code>
+              </pre>
+            </div>
+          ))}
+        </div>
+
+        <h3 className="cheatsheet-section-heading">Common errors</h3>
+        <div className="cheatsheet-errors">
+          {COMMON_ERRORS.map((err) => (
+            <div className="cheatsheet-error-row" key={err.symptom}>
+              <div className="cheatsheet-error-symptom">{err.symptom}</div>
+              <div className="cheatsheet-error-fix">{err.fix}</div>
             </div>
           ))}
         </div>
