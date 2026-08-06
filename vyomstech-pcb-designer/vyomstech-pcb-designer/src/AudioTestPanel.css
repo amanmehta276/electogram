@@ -200,6 +200,34 @@
   word-break: break-all;
 }
 
+.audio-waveform-block {
+  margin-bottom: 10px;
+}
+
+.audio-waveform-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--silkscreen-dim);
+  margin-bottom: 4px;
+}
+
+.audio-waveform-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.audio-waveform-dot-input {
+  background: var(--silkscreen);
+}
+
+.audio-waveform-dot-output {
+  background: var(--copper-bright);
+}
+
 .audio-buttons {
   display: flex;
   gap: 8px;

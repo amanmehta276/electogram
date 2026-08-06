@@ -40,13 +40,13 @@ function App() {
     [ENTRYPOINT]: DEFAULT_CODE,
   })
   const [status, setStatus] = useState<Status>("idle")
-  const [showCheatsheet, setShowCheatsheet] = useState(false)
-  const [showAudioTest, setShowAudioTest] = useState(false)
+  const [activePanel, setActivePanel] = useState<
+    "cheatsheet" | "projects" | "audio" | null
+  >(null)
 
   const { projects, saveProject, deleteProject } = useProjects()
   const [activeId, setActiveId] = useState<string | null>(null)
   const [projectName, setProjectName] = useState("Untitled board")
-  const [showProjects, setShowProjects] = useState(false)
   const [saveFlash, setSaveFlash] = useState(false)
 
   const [circuitJson, setCircuitJson] = useState<any[] | null>(null)
@@ -70,7 +70,7 @@ function App() {
       setProjectName(project.name)
       setCode(project.code)
       runCode(project.code)
-      setShowProjects(false)
+      setActivePanel(null)
     },
     [runCode],
   )
@@ -204,7 +204,7 @@ function App() {
           <button className="topbar-btn topbar-btn-primary" onClick={handleSave}>
             {saveFlash ? "Saved" : "Save"}
           </button>
-          <button className="topbar-btn" onClick={() => setShowProjects(true)}>
+          <button className="topbar-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("projects") }}>
             Boards ({projects.length})
           </button>
         </div>
@@ -212,14 +212,14 @@ function App() {
         <div className="topbar-right">
           <button
             className="syntax-btn"
-            onClick={() => setShowAudioTest(true)}
+            onClick={() => { setShowDownloadMenu(false); setActivePanel("audio") }}
           >
             🔊 Audio test
           </button>
 
           <button
             className="syntax-btn"
-            onClick={() => setShowCheatsheet(true)}
+            onClick={() => { setShowDownloadMenu(false); setActivePanel("cheatsheet") }}
           >
             VyomLang syntax
           </button>
@@ -227,7 +227,10 @@ function App() {
           <div className="download-wrap">
             <button
               className="topbar-btn"
-              onClick={() => setShowDownloadMenu((v) => !v)}
+              onClick={() => {
+                setActivePanel(null)
+                setShowDownloadMenu((v) => !v)
+              }}
             >
               Download ▾
             </button>
@@ -279,19 +282,19 @@ function App() {
         </div>
       </header>
 
-      {showCheatsheet && (
-        <Cheatsheet onClose={() => setShowCheatsheet(false)} />
+      {activePanel === "cheatsheet" && (
+        <Cheatsheet onClose={() => setActivePanel(null)} />
       )}
 
-      {showAudioTest && (
-        <AudioTestPanel code={code} onClose={() => setShowAudioTest(false)} />
+      {activePanel === "audio" && (
+        <AudioTestPanel code={code} onClose={() => setActivePanel(null)} />
       )}
 
-      {showProjects && (
+      {activePanel === "projects" && (
         <ProjectsPanel
           projects={projects}
           activeId={activeId}
-          onClose={() => setShowProjects(false)}
+          onClose={() => setActivePanel(null)}
           onLoad={handleLoad}
           onDelete={deleteProject}
         />

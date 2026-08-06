@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { extractRcFromCode } from "./rcFilter"
 import { audioBufferToWavBlob } from "./wavEncoder"
 import { downloadBlob } from "./downloadFile"
+import { WaveformCanvas } from "./WaveformCanvas"
 import "./AudioTestPanel.css"
 
 interface AudioTestPanelProps {
@@ -12,6 +13,27 @@ interface AudioTestPanelProps {
 function formatHz(hz: number) {
   if (hz >= 1000) return `${(hz / 1000).toFixed(2)} kHz`
   return `${hz.toFixed(1)} Hz`
+}
+
+async function renderFiltered(
+  buffer: AudioBuffer,
+  filterType: "lowpass" | "highpass",
+  cutoffHz: number,
+): Promise<AudioBuffer> {
+  const offlineCtx = new OfflineAudioContext(
+    buffer.numberOfChannels,
+    buffer.length,
+    buffer.sampleRate,
+  )
+  const source = offlineCtx.createBufferSource()
+  source.buffer = buffer
+  const filter = offlineCtx.createBiquadFilter()
+  filter.type = filterType
+  filter.frequency.value = cutoffHz
+  source.connect(filter)
+  filter.connect(offlineCtx.destination)
+  source.start()
+  return offlineCtx.startRendering()
 }
 
 export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
@@ -26,6 +48,10 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
   const [filterType, setFilterType] = useState<"lowpass" | "highpass">(
     "lowpass",
   )
+  const [filteredBuffer, setFilteredBuffer] = useState<AudioBuffer | null>(
+    null,
+  )
+  const [graphLoading, setGraphLoading] = useState(false)
 
   const [micActive, setMicActive] = useState(false)
   const [micFiltered, setMicFiltered] = useState(true)
@@ -49,6 +75,28 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
     }
     return ctxRef.current
   }
+
+  useEffect(() => {
+    if (!buffer || !cutoffHz) {
+      setFilteredBuffer(null)
+      return
+    }
+    let cancelled = false
+    setGraphLoading(true)
+    renderFiltered(buffer, filterType, cutoffHz)
+      .then((rendered) => {
+        if (!cancelled) {
+          setFilteredBuffer(rendered)
+          setGraphLoading(false)
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setGraphLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [buffer, filterType, cutoffHz])
 
   const handleFile = useCallback(async (file: File) => {
     setStatus("loading")
@@ -143,24 +191,13 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
   )
 
   const downloadFiltered = useCallback(async () => {
-    if (!buffer || !cutoffHz) return
-    const offlineCtx = new OfflineAudioContext(
-      buffer.numberOfChannels,
-      buffer.length,
-      buffer.sampleRate,
-    )
-    const source = offlineCtx.createBufferSource()
-    source.buffer = buffer
-    const filter = offlineCtx.createBiquadFilter()
-    filter.type = filterType
-    filter.frequency.value = cutoffHz
-    source.connect(filter)
-    filter.connect(offlineCtx.destination)
-    source.start()
-    const rendered = await offlineCtx.startRendering()
+    const rendered =
+      filteredBuffer ??
+      (buffer && cutoffHz ? await renderFiltered(buffer, filterType, cutoffHz) : null)
+    if (!rendered) return
     const wav = audioBufferToWavBlob(rendered)
     downloadBlob(`${(fileName ?? "audio").replace(/\.[^.]+$/, "")}-filtered.wav`, wav)
-  }, [buffer, cutoffHz, fileName, filterType])
+  }, [buffer, cutoffHz, fileName, filterType, filteredBuffer])
 
   const stopMic = useCallback(() => {
     micStreamRef.current?.getTracks().forEach((track) => track.stop())
@@ -332,6 +369,23 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
               <div className="audio-controls">
                 <p className="audio-section-title">2. Hear the output</p>
                 <p className="audio-filename">{fileName}</p>
+
+                <div className="audio-waveform-block">
+                  <div className="audio-waveform-label">
+                    <span className="audio-waveform-dot audio-waveform-dot-input" />
+                    Input
+                  </div>
+                  <WaveformCanvas buffer={buffer} color="#eef1ec" />
+                </div>
+
+                <div className="audio-waveform-block">
+                  <div className="audio-waveform-label">
+                    <span className="audio-waveform-dot audio-waveform-dot-output" />
+                    Filtered output {graphLoading && "(rendering…)"}
+                  </div>
+                  <WaveformCanvas buffer={filteredBuffer} color="#f0b878" />
+                </div>
+
                 <div className="audio-buttons">
                   <button
                     className={playing === "original" ? "audio-btn-active" : ""}
