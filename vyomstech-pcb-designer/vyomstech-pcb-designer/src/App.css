@@ -408,3 +408,10 @@
     padding: 16px 14px 32px;
   }
 }
+
+/* Hide RunFrame's internal version-attribution lines in its overflow menu
+   (the "@tscircuit/runframe@..." / "@tscircuit/eval@..." disabled rows) —
+   the rest of that menu (Analog Simulation, Errors, BOM, etc.) stays. */
+.rf-opacity-60.rf-cursor-default.rf-select-none {
+  display: none !important;
+}

@@ -347,6 +347,7 @@ function App() {
             fsMap={fsMap}
             entrypoint={ENTRYPOINT}
             showRunButton={false}
+            showFileMenu={false}
             showToggleFullScreen={false}
             onRenderStarted={() => setStatus("running")}
             onRenderFinished={() => setStatus("ok")}
