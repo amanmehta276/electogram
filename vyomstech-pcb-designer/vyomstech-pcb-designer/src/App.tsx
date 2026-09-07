@@ -16,6 +16,7 @@ import { Cheatsheet } from "./Cheatsheet"
 import { ProjectsPanel } from "./ProjectsPanel"
 import { AudioTestPanel } from "./AudioTestPanel"
 import { SimulationPanel } from "./SimulationPanel"
+import { AIAssistantPanel } from "./AIAssistantPanel"
 import { useProjects, type Project } from "./useProjects"
 import { downloadTextFile, downloadBlob } from "./downloadFile"
 import "./App.css"
@@ -42,7 +43,7 @@ function App() {
   })
   const [status, setStatus] = useState<Status>("idle")
   const [activePanel, setActivePanel] = useState<
-    "cheatsheet" | "projects" | "audio" | "simulation" | null
+    "cheatsheet" | "projects" | "audio" | "simulation" | "ai" | null
   >(null)
 
   const { projects, saveProject, deleteProject } = useProjects()
@@ -232,6 +233,13 @@ function App() {
             VyomLang syntax
           </button>
 
+          <button
+            className="syntax-btn"
+            onClick={() => { setShowDownloadMenu(false); setActivePanel("ai") }}
+          >
+            AI Assistant
+          </button>
+
           <div className="download-wrap">
             <button
               className="topbar-btn"
@@ -312,6 +320,16 @@ function App() {
           onClose={() => setActivePanel(null)}
           onLoad={handleLoad}
           onDelete={deleteProject}
+        />
+      )}
+
+      {activePanel === "ai" && (
+        <AIAssistantPanel
+          onClose={() => setActivePanel(null)}
+          onInsert={(newCode) => {
+            setCode(newCode)
+            runCode(newCode)
+          }}
         />
       )}
 
