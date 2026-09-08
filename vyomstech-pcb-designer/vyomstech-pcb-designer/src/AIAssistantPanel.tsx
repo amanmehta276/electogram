@@ -70,7 +70,7 @@ export function AIAssistantPanel({ onClose, onInsert }: AIAssistantPanelProps) {
         <div className="ai-header">
           <div>
             <div className="ai-eyebrow">AI Assistant · Free</div>
-            <h2>Describe a circuit</h2>
+            <h2>Trace, what can I build for you?</h2>
           </div>
           <button className="ai-close" onClick={onClose} aria-label="Close">
             ×
@@ -82,7 +82,7 @@ export function AIAssistantPanel({ onClose, onInsert }: AIAssistantPanelProps) {
         </p>
 
         <label className="ai-field-label" htmlFor="ai-desc">
-          What do you want to build?
+          Describe the circuit you want Trace to build.
         </label>
         <textarea
           id="ai-desc"
