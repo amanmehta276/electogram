@@ -40,8 +40,18 @@ export function AIAssistantPanel({ onClose, onInsert }: AIAssistantPanelProps) {
         throw new Error(data.error ?? `Request failed (${res.status})`)
       }
 
+      if (typeof data.code !== "string" || !data.code.trim()) {
+        throw new Error("The server returned no circuit code. Please try again.")
+      }
+
       setGeneratedCode(data.code)
-      setWarnings(Array.isArray(data.warnings) ? data.warnings.filter((warning): warning is string => typeof warning === "string") : [])
+      setWarnings(
+        Array.isArray(data.warnings)
+          ? data.warnings.filter(
+              (warning): warning is string => typeof warning === "string",
+            )
+          : [],
+      )
       setStatus("idle")
     } catch (err) {
       setStatus("error")
