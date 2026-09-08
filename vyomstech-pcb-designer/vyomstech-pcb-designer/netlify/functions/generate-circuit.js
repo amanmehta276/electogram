@@ -8,7 +8,7 @@
 //    add GEMINI_API_KEY = your key
 // 3. Deploy — Netlify auto-detects functions in netlify/functions/
 
-const MODEL = "gemini-2.5-flash"
+const MODEL = "gemini-3.6-flash"
 
 // This is the FULL reference — not a summary. Gemini has never seen
 // "VyomLang" in training data, so accuracy depends entirely on how much
