@@ -243,12 +243,20 @@ exports.handler = async (event) => {
 
     if (!code) {
       const blockReason = candidate?.finishReason || data?.promptFeedback?.blockReason
+      const responseDetail = [
+        blockReason ? `reason: ${blockReason}` : null,
+        `candidates: ${Array.isArray(data?.candidates) ? data.candidates.length : 0}`,
+        data?.promptFeedback?.blockReason
+          ? `prompt: ${data.promptFeedback.blockReason}`
+          : null,
+      ]
+        .filter(Boolean)
+        .join(", ")
       return {
         statusCode: 502,
+        headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          error: blockReason
-            ? `Gemini did not return code (${blockReason}). Try a simpler circuit description.`
-            : "Gemini returned an empty response. Try again or rephrase the circuit description.",
+          error: `Gemini returned no circuit code${responseDetail ? ` (${responseDetail})` : ""}. Try a simpler circuit description.`,
         }),
       }
     }
