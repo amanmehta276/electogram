@@ -125,6 +125,10 @@
   color: var(--signal-red);
 }
 
+.ai-status-warn {
+  color: var(--copper-bright);
+}
+
 .ai-result {
   margin-top: 8px;
 }
