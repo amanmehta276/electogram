@@ -185,7 +185,7 @@ RULES FOR YOUR RESPONSE
 4. Respond with ONLY a single \`\`\`tsx code block containing the complete
    circuit.add(...) design. No commentary before or after.`
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" }
   }
