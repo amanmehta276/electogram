@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react"
+import { AlertTriangle, Sparkles, X } from "lucide-react"
 import "./AIAssistantPanel.css"
 
 interface AIAssistantPanelProps {
@@ -69,11 +70,11 @@ export function AIAssistantPanel({ onClose, onInsert }: AIAssistantPanelProps) {
       >
         <div className="ai-header">
           <div>
-            <div className="ai-eyebrow">AI Assistant · Free</div>
-            <h2>Trace, what can I build for you?</h2>
+            <div className="ai-eyebrow">Hey I am Trace!</div>
+            <h2>What can Trace build for you?</h2>
           </div>
           <button className="ai-close" onClick={onClose} aria-label="Close">
-            ×
+            <X size={18} aria-hidden="true" />
           </button>
         </div>
 
@@ -98,7 +99,7 @@ export function AIAssistantPanel({ onClose, onInsert }: AIAssistantPanelProps) {
           onClick={generate}
           disabled={status === "loading"}
         >
-          {status === "loading" ? "Generating…" : "✨ Generate circuit"}
+          {status === "loading" ? "Generating…" : <><Sparkles size={15} aria-hidden="true" /> Generate circuit</>}
         </button>
 
         {status === "error" && errorMsg && (
@@ -109,7 +110,7 @@ export function AIAssistantPanel({ onClose, onInsert }: AIAssistantPanelProps) {
           <div className="ai-result">
             {warnings.length > 0 && (
               <p className="ai-status ai-status-warn">
-                ⚠ {warnings.join(" · ")} — double-check before relying on this.
+                <AlertTriangle size={15} aria-hidden="true" /> {warnings.join(" · ")} — double-check before relying on this.
               </p>
             )}
             <p className="ai-field-label">Generated VyomLang</p>

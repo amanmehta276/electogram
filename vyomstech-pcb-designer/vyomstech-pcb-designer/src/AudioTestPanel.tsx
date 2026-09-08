@@ -3,6 +3,7 @@ import { extractRcFromCode } from "./rcFilter"
 import { audioBufferToWavBlob } from "./wavEncoder"
 import { downloadBlob } from "./downloadFile"
 import { WaveformCanvas } from "./WaveformCanvas"
+import { Mic, Play, Square, Volume2, X } from "lucide-react"
 import "./AudioTestPanel.css"
 
 interface AudioTestPanelProps {
@@ -278,7 +279,7 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
             <h2>Audio test</h2>
           </div>
           <button className="audio-close" onClick={onClose} aria-label="Close">
-            ×
+            <X size={18} aria-hidden="true" />
           </button>
         </div>
 
@@ -341,14 +342,14 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
 
               {!isRecording ? (
                 <button className="audio-upload audio-upload-btn" onClick={startRecording}>
-                  🎙️ Record voice
+                  <Mic size={15} aria-hidden="true" /> Record voice
                 </button>
               ) : (
                 <button
                   className="audio-upload audio-upload-btn audio-recording"
                   onClick={submitRecording}
                 >
-                  ■ Stop &amp; submit
+                  <Square size={14} fill="currentColor" aria-hidden="true" /> Stop &amp; submit
                 </button>
               )}
             </div>
@@ -393,7 +394,7 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
                       playing === "original" ? stop() : play("original")
                     }
                   >
-                    {playing === "original" ? "■ Stop" : "▶ Play input"}
+                    {playing === "original" ? <><Square size={14} fill="currentColor" aria-hidden="true" /> Stop</> : <><Play size={14} fill="currentColor" aria-hidden="true" /> Play input</>}
                   </button>
                   <button
                     className={playing === "filtered" ? "audio-btn-active" : ""}
@@ -401,7 +402,7 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
                       playing === "filtered" ? stop() : play("filtered")
                     }
                   >
-                    {playing === "filtered" ? "■ Stop" : "▶ Play filtered output"}
+                    {playing === "filtered" ? <><Square size={14} fill="currentColor" aria-hidden="true" /> Stop</> : <><Volume2 size={15} aria-hidden="true" /> Play filtered output</>}
                   </button>
                 </div>
                 <p className="audio-section-title">3. Download the output</p>
@@ -430,7 +431,9 @@ export function AudioTestPanel({ code, onClose }: AudioTestPanelProps) {
                   <button className="audio-btn-active" onClick={toggleMicFilter}>
                     Filter: {micFiltered ? "ON" : "OFF"}
                   </button>
-                  <button onClick={stopMic}>■ Stop</button>
+                  <button onClick={stopMic}>
+                    <Square size={14} fill="currentColor" aria-hidden="true" /> Stop
+                  </button>
                 </div>
               )}
 

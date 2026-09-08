@@ -1,4 +1,5 @@
 import "./Cheatsheet.css"
+import { X } from "lucide-react"
 
 interface CheatsheetProps {
   onClose: () => void
@@ -320,7 +321,7 @@ const COMMON_ERRORS = [
   },
   {
     symptom: "Rendered fewer hooks than expected",
-    fix: "A tool-level React glitch from rapid re-renders, not a circuit mistake — use the ▶ Run button instead of continuous typing.",
+    fix: "A tool-level React glitch from rapid re-renders, not a circuit mistake — use the Run button instead of continuous typing.",
   },
 ]
 
@@ -339,7 +340,7 @@ export function Cheatsheet({ onClose }: CheatsheetProps) {
             <h2>VyomLang</h2>
           </div>
           <button className="cheatsheet-close" onClick={onClose} aria-label="Close">
-            ×
+            <X size={18} aria-hidden="true" />
           </button>
         </div>
 

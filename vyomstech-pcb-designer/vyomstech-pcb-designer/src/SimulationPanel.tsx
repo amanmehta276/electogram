@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import { X } from "lucide-react"
 import { convertCircuitJsonToSimulationGraphSvg } from "circuit-to-svg"
 import { downloadTextFile } from "./downloadFile"
 import "./SimulationPanel.css"
@@ -48,7 +49,7 @@ export function SimulationPanel({ circuitJson, onClose }: SimulationPanelProps) 
             <h2>Simulation graph</h2>
           </div>
           <button className="sim-close" onClick={onClose} aria-label="Close">
-            ×
+            <X size={18} aria-hidden="true" />
           </button>
         </div>
 

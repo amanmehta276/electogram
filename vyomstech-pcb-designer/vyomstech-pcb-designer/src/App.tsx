@@ -12,6 +12,7 @@ import {
   stringifyExcellonDrill,
 } from "circuit-json-to-gerber"
 import JSZip from "jszip"
+import { BarChart3, Play, Volume2 } from "lucide-react"
 import { Cheatsheet } from "./Cheatsheet"
 import { ProjectsPanel } from "./ProjectsPanel"
 import { AudioTestPanel } from "./AudioTestPanel"
@@ -216,14 +217,14 @@ function App() {
             className="syntax-btn"
             onClick={() => { setShowDownloadMenu(false); setActivePanel("simulation") }}
           >
-            📈 Simulation
+            <BarChart3 size={15} aria-hidden="true" /> Simulation
           </button>
 
           <button
             className="syntax-btn"
             onClick={() => { setShowDownloadMenu(false); setActivePanel("audio") }}
           >
-            🔊 Audio test
+            <Volume2 size={15} aria-hidden="true" /> Audio test
           </button>
 
           <button
@@ -237,7 +238,7 @@ function App() {
             className="syntax-btn"
             onClick={() => { setShowDownloadMenu(false); setActivePanel("ai") }}
           >
-            AI Assistant
+            Trace AI
           </button>
 
           <div className="download-wrap">
@@ -342,7 +343,7 @@ function App() {
               className="run-btn"
               onClick={() => runCode(code)}
             >
-              ▶ Run
+              <Play size={14} fill="currentColor" aria-hidden="true" /> Run
             </button>
           </div>
           <div className="editor-shell">

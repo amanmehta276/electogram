@@ -1,4 +1,5 @@
 import type { Project } from "./useProjects"
+import { X } from "lucide-react"
 import "./ProjectsPanel.css"
 
 interface ProjectsPanelProps {
@@ -41,7 +42,7 @@ export function ProjectsPanel({
             <h2>Saved projects</h2>
           </div>
           <button className="projects-close" onClick={onClose} aria-label="Close">
-            ×
+            <X size={18} aria-hidden="true" />
           </button>
         </div>
 
