@@ -28,11 +28,20 @@ export function AIAssistantPanel({ onClose, onInsert }: AIAssistantPanelProps) {
         body: JSON.stringify({ description: description.trim() }),
       })
 
-      const data = await res.json()
-      if (!res.ok) throw new Error(data?.error ?? `Request failed (${res.status})`)
+      const responseBody = await res.text()
+      let data: { code?: string; warnings?: unknown; error?: string } = {}
+      try {
+        data = JSON.parse(responseBody)
+      } catch {
+        data.error = responseBody.slice(0, 300)
+      }
+
+      if (!res.ok) {
+        throw new Error(data.error ?? `Request failed (${res.status})`)
+      }
 
       setGeneratedCode(data.code)
-      setWarnings(data.warnings ?? [])
+      setWarnings(Array.isArray(data.warnings) ? data.warnings.filter((warning): warning is string => typeof warning === "string") : [])
       setStatus("idle")
     } catch (err) {
       setStatus("error")

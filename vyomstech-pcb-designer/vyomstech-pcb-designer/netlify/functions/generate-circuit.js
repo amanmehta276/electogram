@@ -218,7 +218,7 @@ exports.handler = async (event) => {
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
           contents: [{ role: "user", parts: [{ text: description.trim() }] }],
-          generationConfig: { temperature: 0.3 },
+          generationConfig: { temperature: 0.3, maxOutputTokens: 4096 },
         }),
       },
     )
