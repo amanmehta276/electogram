@@ -232,14 +232,24 @@ exports.handler = async (event) => {
     }
 
     const data = await res.json()
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? ""
+    const candidate = data?.candidates?.[0]
+    const text = Array.isArray(candidate?.content?.parts)
+      ? candidate.content.parts
+          .map((part) => (typeof part?.text === "string" ? part.text : ""))
+          .join("\n")
+      : ""
     const match = text.match(/```(?:tsx|jsx|typescript)?\s*([\s\S]*?)```/)
     const code = (match ? match[1] : text).trim()
 
     if (!code) {
+      const blockReason = candidate?.finishReason || data?.promptFeedback?.blockReason
       return {
         statusCode: 502,
-        body: JSON.stringify({ error: "No code came back — try rephrasing." }),
+        body: JSON.stringify({
+          error: blockReason
+            ? `Gemini did not return code (${blockReason}). Try a simpler circuit description.`
+            : "Gemini returned an empty response. Try again or rephrase the circuit description.",
+        }),
       }
     }
 
