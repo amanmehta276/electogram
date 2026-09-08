@@ -40,6 +40,9 @@
 }
 
 .ai-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
   color: var(--silkscreen-dim);
@@ -94,6 +97,10 @@
 }
 
 .ai-generate-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   width: 100%;
   margin-top: 18px;
   background: var(--copper);
@@ -126,6 +133,9 @@
 }
 
 .ai-status-warn {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
   color: var(--copper-bright);
 }
 

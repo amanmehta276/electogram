@@ -146,6 +146,10 @@
 }
 
 .audio-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   background: transparent;
   color: var(--silkscreen-dim);
   font-family: var(--font-body);
@@ -235,6 +239,10 @@
 }
 
 .audio-buttons button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   flex: 1;
   background: transparent;
   border: 1px solid var(--hairline);
