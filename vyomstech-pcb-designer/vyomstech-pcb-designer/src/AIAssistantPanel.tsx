@@ -79,7 +79,7 @@ export function AIAssistantPanel({ onClose, onInsert }: AIAssistantPanelProps) {
         </div>
 
         <p className="ai-note">
-          No API key needed — this runs through VyomsTech's own server.
+          Make whaterver you want, Trace will try to generate a working circuit for you. It may not be perfect, so please double-check the generated code before using it.
         </p>
 
         <label className="ai-field-label" htmlFor="ai-desc">
