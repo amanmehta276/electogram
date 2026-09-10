@@ -19,6 +19,6 @@ export const uiConfig = {
   viewTabs: [
     { id: "pcb", label: "PCB" },
     { id: "schematic", label: "Schematic" },
-    { id: "threeD", label: "TD" },
+    { id: "cad", label: "TD" },
   ],
 } as const

@@ -231,6 +231,28 @@
   text-align: right;
 }
 
+/* RunFrame owns these tabs, so expose their labels through the app config. */
+.preview-panel button[role="tab"] {
+  font-size: 0 !important;
+}
+
+.preview-panel button[role="tab"]::after {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.preview-panel button[role="tab"]:nth-of-type(1)::after {
+  content: var(--preview-tab-pcb);
+}
+
+.preview-panel button[role="tab"]:nth-of-type(2)::after {
+  content: var(--preview-tab-schematic);
+}
+
+.preview-panel button[role="tab"]:nth-of-type(3)::after {
+  content: var(--preview-tab-cad);
+}
+
 .led {
   width: 9px;
   height: 9px;
