@@ -22,6 +22,8 @@ import { BOMPanel } from "./BOMPanel"
 import { TemplatesPanel, type CircuitTemplate } from "./TemplatesPanel"
 import { useProjects, type Project } from "./useProjects"
 import { downloadTextFile, downloadBlob } from "./downloadFile"
+import { appThemeStyle } from "./uiTheme"
+import { uiConfig } from "./uiConfig"
 import "./App.css"
 
 const DEFAULT_CODE = `circuit.add(
@@ -174,7 +176,7 @@ function App() {
   }
 
   return (
-    <div className="app">
+    <div className="app" style={appThemeStyle}>
       <header className="topbar">
         <div className="brand">
           <span className="brand-mark" aria-hidden="true">
@@ -191,9 +193,9 @@ function App() {
               />
             </svg>
           </span>
-          <span className="brand-name">VyomsTech</span>
+          <span className="brand-name">{uiConfig.brand.name}</span>
           <span className="brand-divider">/</span>
-          <span className="brand-product">PCB Designer</span>
+          <span className="brand-product">{uiConfig.brand.product}</span>
         </div>
 
         <div className="project-bar">
@@ -204,38 +206,38 @@ function App() {
             aria-label="Board name"
           />
           <button className="topbar-btn" onClick={handleNew}>
-            New
+            {uiConfig.topbar.new}
           </button>
           <button className="topbar-btn topbar-btn-primary" onClick={handleSave}>
-            {saveFlash ? "Saved" : "Save"}
+            {saveFlash ? uiConfig.topbar.saved : uiConfig.topbar.save}
           </button>
           <button className="topbar-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("projects") }}>
-            Boards ({projects.length})
+            {uiConfig.topbar.boards} ({projects.length})
           </button>
         </div>
 
         <div className="topbar-right">
           <div className="topbar-tool-group">
             <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("templates") }}>
-              <Shapes size={15} aria-hidden="true" /> Templates
+              <Shapes size={15} aria-hidden="true" /> {uiConfig.topbar.templates}
             </button>
             <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("bom") }}>
-              <Calculator size={15} aria-hidden="true" /> BOM
+              <Calculator size={15} aria-hidden="true" /> {uiConfig.topbar.bom}
             </button>
           </div>
 
           <div className="topbar-tool-group">
             <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("simulation") }}>
-              <BarChart3 size={15} aria-hidden="true" /> Simulation
+              <BarChart3 size={15} aria-hidden="true" /> {uiConfig.topbar.simulation}
             </button>
             <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("audio") }}>
-              <Volume2 size={15} aria-hidden="true" /> Audio test
+              <Volume2 size={15} aria-hidden="true" /> {uiConfig.topbar.audio}
             </button>
             <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("cheatsheet") }}>
-              VyomLang syntax
+              {uiConfig.topbar.syntax}
             </button>
             <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("ai") }}>
-              Trace AI
+              {uiConfig.topbar.ai}
             </button>
           </div>
 
@@ -248,7 +250,7 @@ function App() {
                   setShowDownloadMenu((v) => !v)
                 }}
               >
-                Download ▾
+                {uiConfig.topbar.download} ▾
               </button>
               {showDownloadMenu && (
                 <>
