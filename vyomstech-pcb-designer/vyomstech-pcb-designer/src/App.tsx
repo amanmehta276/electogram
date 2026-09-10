@@ -12,12 +12,14 @@ import {
   stringifyExcellonDrill,
 } from "circuit-json-to-gerber"
 import JSZip from "jszip"
-import { BarChart3, Play, Volume2 } from "lucide-react"
+import { BarChart3, Calculator, Play, Shapes, Volume2 } from "lucide-react"
 import { Cheatsheet } from "./Cheatsheet"
 import { ProjectsPanel } from "./ProjectsPanel"
 import { AudioTestPanel } from "./AudioTestPanel"
 import { SimulationPanel } from "./SimulationPanel"
 import { AIAssistantPanel } from "./AIAssistantPanel"
+import { BOMPanel } from "./BOMPanel"
+import { TemplatesPanel, type CircuitTemplate } from "./TemplatesPanel"
 import { useProjects, type Project } from "./useProjects"
 import { downloadTextFile, downloadBlob } from "./downloadFile"
 import "./App.css"
@@ -44,7 +46,7 @@ function App() {
   })
   const [status, setStatus] = useState<Status>("idle")
   const [activePanel, setActivePanel] = useState<
-    "cheatsheet" | "projects" | "audio" | "simulation" | "ai" | null
+    "cheatsheet" | "projects" | "audio" | "simulation" | "ai" | "templates" | "bom" | null
   >(null)
 
   const { projects, saveProject, deleteProject } = useProjects()
@@ -213,6 +215,14 @@ function App() {
         </div>
 
         <div className="topbar-right">
+          <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("templates") }}>
+            <Shapes size={15} aria-hidden="true" /> Templates
+          </button>
+
+          <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("bom") }}>
+            <Calculator size={15} aria-hidden="true" /> BOM
+          </button>
+
           <button
             className="syntax-btn"
             onClick={() => { setShowDownloadMenu(false); setActivePanel("simulation") }}
@@ -333,6 +343,21 @@ function App() {
           }}
         />
       )}
+
+      {activePanel === "templates" && (
+        <TemplatesPanel
+          onClose={() => setActivePanel(null)}
+          onSelect={(template: CircuitTemplate) => {
+            setProjectName(template.name)
+            setActiveId(null)
+            setCode(template.code)
+            runCode(template.code)
+            setActivePanel(null)
+          }}
+        />
+      )}
+
+      {activePanel === "bom" && <BOMPanel code={code} onClose={() => setActivePanel(null)} />}
 
       <main className="workspace">
         <section className="panel editor-panel">

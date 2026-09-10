@@ -172,6 +172,52 @@ circuit.add(
   </board>
 )
 
+--- Example: inverting buck-boost converter ---
+// This topology uses a P-channel high-side MOSFET, an inductor, and a
+// Schottky freewheeling diode to produce an inverted output node.
+circuit.add(
+  <board width="55mm" height="35mm">
+    <pinheader name="J1" pinCount={2} pitch="2.54mm" gender="female" footprint="pinrow2" pcbX={-22} pcbY={10} />
+    <fuse name="F1" currentRating="2A" voltageRating="24V" footprint="0603" pcbX={-15} pcbY={10} />
+    <capacitor name="C1" capacitance="47uF" footprint="0805" pcbX={-8} pcbY={10} />
+
+    <mosfet name="Q1" channelType="p" mosfetMode="enhancement" footprint="sot23" pcbX={0} pcbY={4} />
+    <resistor name="R1" resistance="10k" footprint="0402" pcbX={4} pcbY={9} />
+
+    <pinheader name="J2" pinCount={2} pitch="2.54mm" gender="female" footprint="pinrow2" pcbX={-8} pcbY={-12} />
+    <resistor name="R2" resistance="220" footprint="0402" pcbX={-2} pcbY={-6} />
+
+    <inductor name="L1" inductance="47uH" footprint="0805" pcbX={9} pcbY={0} />
+    <diode name="D1" variant="schottky" footprint="sod123" pcbX={9} pcbY={8} connections={{ anode: "net.GND", cathode: "net.SW" }} />
+
+    <capacitor name="C2" capacitance="100uF" footprint="0805" pcbX={18} pcbY={0} />
+    <pinheader name="J3" pinCount={2} pitch="2.54mm" gender="female" footprint="pinrow2" pcbX={24} pcbY={10} />
+    <testpoint name="TP1" footprintVariant="pad" padShape="circle" pcbX={4} pcbY={14} />
+    <testpoint name="TP2" footprintVariant="pad" padShape="circle" pcbX={18} pcbY={14} />
+
+    <trace name="T1" from=".J1 > .pin1" to=".F1 > .pin1" />
+    <trace name="T2" from=".F1 > .pin2" to="net.VINP" />
+    <trace name="T3" from=".J1 > .pin2" to="net.GND" />
+    <trace name="T4" from="net.VINP" to=".C1 > .pin1" />
+    <trace name="T5" from=".C1 > .pin2" to="net.GND" />
+    <trace name="T6" from="net.VINP" to=".Q1 > .source" />
+    <trace name="T7" from=".Q1 > .drain" to="net.SW" />
+    <trace name="T8" from="net.VINP" to=".R1 > .pin1" />
+    <trace name="T9" from=".R1 > .pin2" to=".Q1 > .gate" />
+    <trace name="T10" from=".J2 > .pin1" to=".R2 > .pin1" />
+    <trace name="T11" from=".R2 > .pin2" to=".Q1 > .gate" />
+    <trace name="T12" from=".J2 > .pin2" to="net.GND" />
+    <trace name="T13" from=".TP1 > .pin1" to="net.SW" />
+    <trace name="T14" from="net.SW" to=".L1 > .pin1" />
+    <trace name="T15" from=".L1 > .pin2" to="net.VOUT_NEG" />
+    <trace name="T16" from="net.GND" to=".C2 > .pin1" />
+    <trace name="T17" from=".C2 > .pin2" to="net.VOUT_NEG" />
+    <trace name="T18" from=".J3 > .pin1" to="net.GND" />
+    <trace name="T19" from=".J3 > .pin2" to="net.VOUT_NEG" />
+    <trace name="T20" from=".TP2 > .pin1" to="net.VOUT_NEG" />
+  </board>
+)
+
 ============================================================
 RULES FOR YOUR RESPONSE
 ============================================================
