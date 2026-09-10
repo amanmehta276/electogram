@@ -79,10 +79,7 @@ export function ProjectsPanel({
           ))}
         </div>
 
-        <p className="projects-note">
-          This only saves in this browser (localStorage) — nothing goes to a
-          server.
-        </p>
+        
       </aside>
     </div>
   )
