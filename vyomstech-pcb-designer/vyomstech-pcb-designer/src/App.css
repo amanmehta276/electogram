@@ -51,7 +51,33 @@
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
+  min-width: 0;
+  flex-shrink: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.topbar-right::-webkit-scrollbar {
+  display: none;
+}
+
+.topbar-tool-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding-left: 10px;
+  border-left: 1px solid var(--hairline);
+}
+
+.topbar-tool-group:first-child {
+  padding-left: 0;
+  border-left: none;
+}
+
+.topbar-export-group {
+  gap: 10px;
 }
 
 .project-bar {
@@ -120,7 +146,7 @@
   font-family: var(--font-display);
   font-size: 11px;
   letter-spacing: 0.03em;
-  padding: 6px 12px;
+  padding: 6px 10px;
   border-radius: 4px;
   cursor: pointer;
   transition: border-color 140ms ease, color 140ms ease;
@@ -376,8 +402,11 @@
     flex: 1 1 auto;
     justify-content: flex-end;
     gap: 10px;
-    overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+  }
+
+  .topbar-tool-group {
+    padding-left: 8px;
   }
 
   .status-label {

@@ -215,96 +215,80 @@ function App() {
         </div>
 
         <div className="topbar-right">
-          <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("templates") }}>
-            <Shapes size={15} aria-hidden="true" /> Templates
-          </button>
-
-          <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("bom") }}>
-            <Calculator size={15} aria-hidden="true" /> BOM
-          </button>
-
-          <button
-            className="syntax-btn"
-            onClick={() => { setShowDownloadMenu(false); setActivePanel("simulation") }}
-          >
-            <BarChart3 size={15} aria-hidden="true" /> Simulation
-          </button>
-
-          <button
-            className="syntax-btn"
-            onClick={() => { setShowDownloadMenu(false); setActivePanel("audio") }}
-          >
-            <Volume2 size={15} aria-hidden="true" /> Audio test
-          </button>
-
-          <button
-            className="syntax-btn"
-            onClick={() => { setShowDownloadMenu(false); setActivePanel("cheatsheet") }}
-          >
-            VyomLang syntax
-          </button>
-
-          <button
-            className="syntax-btn"
-            onClick={() => { setShowDownloadMenu(false); setActivePanel("ai") }}
-          >
-            Trace AI
-          </button>
-
-          <div className="download-wrap">
-            <button
-              className="topbar-btn"
-              onClick={() => {
-                setActivePanel(null)
-                setShowDownloadMenu((v) => !v)
-              }}
-            >
-              Download ▾
+          <div className="topbar-tool-group">
+            <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("templates") }}>
+              <Shapes size={15} aria-hidden="true" /> Templates
             </button>
-            {showDownloadMenu && (
-              <>
-                <div
-                  className="download-menu-overlay"
-                  onClick={() => setShowDownloadMenu(false)}
-                />
-                <div className="download-menu">
-                  <button onClick={handleDownloadCode}>Code (.tsx)</button>
-                  <button onClick={handleDownloadPcbSvg} disabled={!circuitJson}>
-                    PCB (.svg)
-                  </button>
-                  <button
-                    onClick={handleDownloadSchematicSvg}
-                    disabled={!circuitJson}
-                  >
-                    Schematic (.svg)
-                  </button>
-                  <button
-                    onClick={handleDownloadCircuitJson}
-                    disabled={!circuitJson}
-                  >
-                    Circuit JSON
-                  </button>
-                  <div className="download-menu-divider" />
-                  <button
-                    onClick={handleDownloadGerbers}
-                    disabled={!circuitJson}
-                    className="download-menu-highlight"
-                  >
-                    Gerbers (.zip) — for manufacturing
-                  </button>
-                </div>
-              </>
-            )}
+            <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("bom") }}>
+              <Calculator size={15} aria-hidden="true" /> BOM
+            </button>
           </div>
 
-          <div className="status" role="status">
-            <span className={`led led-${status}`} aria-hidden="true" />
-            <span className="status-label">
-              {status === "idle" && "Ready"}
-              {status === "running" && "Building"}
-              {status === "ok" && "Board OK"}
-              {status === "error" && "Build error"}
-            </span>
+          <div className="topbar-tool-group">
+            <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("simulation") }}>
+              <BarChart3 size={15} aria-hidden="true" /> Simulation
+            </button>
+            <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("audio") }}>
+              <Volume2 size={15} aria-hidden="true" /> Audio test
+            </button>
+            <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("cheatsheet") }}>
+              VyomLang syntax
+            </button>
+            <button className="syntax-btn" onClick={() => { setShowDownloadMenu(false); setActivePanel("ai") }}>
+              Trace AI
+            </button>
+          </div>
+
+          <div className="topbar-tool-group topbar-export-group">
+            <div className="download-wrap">
+              <button
+                className="topbar-btn"
+                onClick={() => {
+                  setActivePanel(null)
+                  setShowDownloadMenu((v) => !v)
+                }}
+              >
+                Download ▾
+              </button>
+              {showDownloadMenu && (
+                <>
+                  <div
+                    className="download-menu-overlay"
+                    onClick={() => setShowDownloadMenu(false)}
+                  />
+                  <div className="download-menu">
+                    <button onClick={handleDownloadCode}>Code (.tsx)</button>
+                    <button onClick={handleDownloadPcbSvg} disabled={!circuitJson}>
+                      PCB (.svg)
+                    </button>
+                    <button onClick={handleDownloadSchematicSvg} disabled={!circuitJson}>
+                      Schematic (.svg)
+                    </button>
+                    <button onClick={handleDownloadCircuitJson} disabled={!circuitJson}>
+                      Circuit JSON
+                    </button>
+                    <div className="download-menu-divider" />
+                    <button
+                      onClick={handleDownloadGerbers}
+                      disabled={!circuitJson}
+                      className="download-menu-highlight"
+                    >
+                      Gerbers (.zip) — for manufacturing
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="status" role="status">
+              <span className={`led led-${status}`} aria-hidden="true" />
+              <span className="status-label">
+                {status === "idle" && "Ready"}
+                {status === "running" && "Building"}
+                {status === "ok" && "Board OK"}
+                {status === "error" && "Build error"}
+              </span>
+            </div>
           </div>
         </div>
       </header>
