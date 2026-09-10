@@ -103,10 +103,22 @@ const ENTRIES = [
   },
   {
     tag: "<connector>",
-    desc: "Declares a connector. standard selects a known type, e.g. usb_c or m2.",
+    desc: "Declares a connector. standard selects usb_c or m2. Connector pin names are not assumed, so place it unwired unless you have a verified pin map.",
     example: `<connector
   name="J1"
   standard="usb_c"
+  pcbX={0}
+  pcbY={0}
+/>`,
+  },
+  {
+    tag: "<pinout>",
+    desc: "Declares a generic or custom IC footprint with user-defined pin labels. Use it unwired unless the pin map is explicit.",
+    example: `<pinout
+  name="U1"
+  pinLabels={{ 1: "VCC", 2: "GND", 3: "OUT" }}
+  pcbX={0}
+  pcbY={0}
 />`,
   },
   {
@@ -148,11 +160,22 @@ const ENTRIES = [
   },
   {
     tag: "<switch>",
-    desc: "Declares a switch or pushbutton. type selects spst, spdt, dpst, or dpdt.",
+    desc: "Declares a simulation-only timed switch. Use pushbutton for a physical PCB button.",
     example: `<switch
   name="SW1"
-  type="spst"
-  footprint="smd_button_6x6"
+  simStartOpen={true}
+  simCloseAt="5ms"
+  connections={{ pin1: "net.VCC", pin2: "net.MID" }}
+/>`,
+  },
+  {
+    tag: "<solderjumper>",
+    desc: "Declares a 2- or 3-pin physical solder jumper for configuration links.",
+    example: `<solderjumper
+  name="SJ1"
+  pinCount={2}
+  pcbX={0}
+  pcbY={0}
 />`,
   },
   {

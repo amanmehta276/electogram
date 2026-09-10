@@ -1,12 +1,6 @@
 // netlify/functions/generate-circuit.js
 //
 // Runs server-side on Netlify — API key never reaches the browser.
-//
-// Setup:
-// 1. Get a free Gemini API key: https://aistudio.google.com/apikey
-// 2. Netlify dashboard: Site settings → Environment variables →
-//    add GEMINI_API_KEY = your key
-// 3. Deploy — Netlify auto-detects functions in netlify/functions/
 
 const MODEL = "gemini-3.6-flash"
 
@@ -71,6 +65,19 @@ CONFIRMED COMPONENTS, PROPS, AND PIN NAMES
 
 <pinheader name="J1" pinCount={4} pitch="2.54mm" gender="male" />
   gender: male | female | unpopulated. Do not wire individual pins unless certain of naming — placing it unwired is safe.
+
+<connector name="J2" standard="usb_c" pcbX={0} pcbY={0} />
+  standard: usb_c | m2. Connector pin names are not confirmed in this VyomLang
+  reference, so place connectors without individual pin traces unless the user
+  explicitly provides a verified pin map.
+
+<pinout name="U1" pinLabels={{ 1: "VCC", 2: "GND", 3: "OUT" }} pcbX={0} pcbY={0} />
+  Use pinout for a generic/custom IC footprint. Pin labels are user-defined;
+  place it without traces unless the requested pin map is explicit and verified.
+
+<solderjumper name="SJ1" pinCount={2} pcbX={0} pcbY={0} />
+  pinCount: 2 | 3. Use this for a physical configuration link. Do not guess
+  internal connections; place it unwired unless the connection is specified.
 
 <crystal name="Y1" frequency="16MHz" loadCapacitance="18pF" footprint="crystal" />
   Pins: pin1, pin2. footprint must be exactly "crystal". ALWAYS needs footprint.
