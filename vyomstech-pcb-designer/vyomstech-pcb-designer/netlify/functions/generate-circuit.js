@@ -264,7 +264,7 @@ export const handler = async (event) => {
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
           contents: [{ role: "user", parts: [{ text: description.trim() }] }],
-          generationConfig: { temperature: 0.3, maxOutputTokens: 4096 },
+          generationConfig: { temperature: 0.2, maxOutputTokens: 8192 },
         }),
       },
     )
@@ -286,6 +286,16 @@ export const handler = async (event) => {
       : ""
     const match = text.match(/```(?:tsx|jsx|typescript)?\s*([\s\S]*?)```/)
     const code = (match ? match[1] : text).trim()
+
+    if (candidate?.finishReason === "MAX_TOKENS") {
+      return {
+        statusCode: 502,
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          error: "Trace ran out of output space before completing this board. Try a smaller board or split it into power, logic, and output sections.",
+        }),
+      }
+    }
 
     if (!code) {
       const blockReason = candidate?.finishReason || data?.promptFeedback?.blockReason
