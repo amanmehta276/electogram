@@ -16,9 +16,4 @@ export const uiConfig = {
     ai: "Trace AI",
     download: "Download",
   },
-  viewTabs: [
-    { id: "pcb", label: "PCB" },
-    { id: "schematic", label: "Schematic" },
-    { id: "cad", label: "3D" },
-  ],
 } as const

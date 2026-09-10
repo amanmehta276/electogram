@@ -1,4 +1,4 @@
-import { useCallback, useState, type CSSProperties } from "react"
+import { useCallback, useState } from "react"
 import Editor, { type OnMount } from "@monaco-editor/react"
 import { RunFrame } from "@tscircuit/runframe/runner"
 import {
@@ -174,12 +174,6 @@ function App() {
       noSyntaxValidation: false,
     })
   }
-
-  const previewTabStyle = {
-    "--preview-tab-pcb": JSON.stringify(uiConfig.viewTabs[0].label),
-    "--preview-tab-schematic": JSON.stringify(uiConfig.viewTabs[1].label),
-    "--preview-tab-cad": JSON.stringify(uiConfig.viewTabs[2].label),
-  } as CSSProperties
 
   return (
     <div className="app" style={appThemeStyle}>
@@ -378,15 +372,13 @@ function App() {
           </div>
         </section>
 
-        <section className="panel preview-panel" style={previewTabStyle}>
+        <section className="panel preview-panel">
           <RunFrame
             fsMap={fsMap}
             entrypoint={ENTRYPOINT}
             showRunButton={false}
             showFileMenu={false}
             showToggleFullScreen={false}
-            availableTabs={uiConfig.viewTabs.map((tab) => tab.id)}
-            defaultTab={uiConfig.viewTabs[0].id}
             onRenderStarted={() => setStatus("running")}
             onRenderFinished={() => setStatus("ok")}
             onError={() => setStatus("error")}
