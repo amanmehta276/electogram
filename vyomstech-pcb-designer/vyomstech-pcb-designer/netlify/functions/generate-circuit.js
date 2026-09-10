@@ -226,6 +226,44 @@ circuit.add(
 )
 
 ============================================================
+COMPLETE COMPONENT REFERENCE (analog + digital + BOM pricing)
+============================================================
+Use this as the full component catalog for educational and demo circuits.
+These values are approximate India retail prices for BOM estimation only and
+are not exact vendor quotes.
+
+Analog / passive:
+- <resistor> — ₹0.10–₹0.50
+- <capacitor> — ₹0.50–₹2 (ceramic), ₹2–₹10 (electrolytic)
+- <inductor> — ₹3–₹15
+- <fuse> — ₹2–₹6
+- <jumper> — ₹1–₹2
+- <testpoint> — ~₹0.50
+- <potentiometer> — ₹10–₹30
+
+Analog / output and protection:
+- <led> — ₹1–₹3
+- <diode> — ₹0.50–₹2
+- <transistor> — ₹1–₹3
+- <mosfet> — ₹5–₹25
+- <battery> — ₹15–₹30
+
+Timing / analog IC:
+- <crystal> — ₹5–₹15
+- <resonator> — ₹5–₹12
+- <opamp> — ₹5–₹15
+
+Digital / interface:
+- <pushbutton> — ₹1–₹3
+- <pinheader> — ₹1–₹2 per pin
+- <connector standard="usb_c" /> — ₹5–₹15 (for BOM only; do not guess pin wiring)
+- <chip> — generic digital IC placeholder; use only when pin names are explicitly known or the user gives an exact verified map. Otherwise prefer <pinout> or leave the component unwired.
+- <chip> examples for BOM use: logic gate IC ₹8–₹20, microcontroller ₹150–₹250, Arduino Nano module ₹250–₹450, 555 timer ₹8–₹15, shift register ₹10–₹20.
+
+Important: for the generated circuit output, prefer confirmed VyomLang tags and verified pin names.
+If a component is not fully validated in the syntax reference above, avoid guessing its internal wiring.
+
+============================================================
 RULES FOR YOUR RESPONSE
 ============================================================
 1. Only use components, props, and pin names confirmed above. If the user asks
