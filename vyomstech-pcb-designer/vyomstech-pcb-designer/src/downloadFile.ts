@@ -11,5 +11,5 @@ export function downloadBlob(filename: string, blob: Blob) {
   document.body.appendChild(a)
   a.click()
   a.remove()
-  URL.revokeObjectURL(url)
+  window.setTimeout(() => URL.revokeObjectURL(url), 100)
 }
