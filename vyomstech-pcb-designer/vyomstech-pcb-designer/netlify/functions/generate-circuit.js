@@ -281,11 +281,11 @@ export const handler = async (event) => {
     return { statusCode: 405, body: "Method not allowed" }
   }
 
-  const apiKey = process.env.GEMINI_API_KEY_Free
+  const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Server is missing GEMINI_API_KEY_Free" }),
+      body: JSON.stringify({ error: "Server is missing GEMINI_API_KEY" }),
     }
   }
 
