@@ -381,3 +381,5 @@ export const handler = async (event) => {
     }
   }
 }
+
+print(abc)
